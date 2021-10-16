@@ -1,9 +1,7 @@
-from flask import Flask, jsonify,redirect,abort
 import os
-import requests
-import json
 import time
-import random
+import json
+import requests
 import yaml
 import urllib.parse
 
@@ -83,29 +81,11 @@ def main_json():
     except:
         return False
 
-# 主程序↓
+import random 
+main_json()
 
-app = Flask(__name__)
+with open('./github.json', 'r',encoding='utf-8') as lb:
+    img_list = lb.read()
 
-
-@app.route('/')
-def index():
-    if main_json() == True:
-        with open('./github.json', 'r',encoding='utf-8') as lb:
-            img_list = lb.read()
-
-        ok_img_list = json.loads(img_list)
-        
-
-        resp = redirect('https://cdn.jsdelivr.net/gh/'+str(re_loadyml('Github_User'))+'/'+str(re_loadyml('Github_Wh'))+'/'+str(re_loadyml('GitHub_dz'))+'/'+ok_img_list[random.randint(0,len(ok_img_list))]["name"], code=302)
-
-        return resp
-    else:   
-        return abort(400, '淦!读取图片列表时候出错了')
-
-@app.route('/json')
-def imgjson():
-    return jsonify({"Choo Choo": "Welcome to your Flask app 🚅"})
-
-if __name__ == '__main__':
-    app.run(debug=True, port=os.getenv("PORT", default=5000))
+ok_img_list = json.loads(img_list)
+print(ok_img_list[random.randint(0,len(ok_img_list))]["name"])  
