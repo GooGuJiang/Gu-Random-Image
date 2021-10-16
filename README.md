@@ -6,7 +6,7 @@ tags:
   - flask
 ---
 
-# Python Flask Example
+# Gu-Random-Image (咕谷的图片随机服务😊)
 
 This is a [Flask](https://flask.palletsprojects.com/en/1.1.x/) app that serves a simple JSON response.
 
@@ -16,6 +16,7 @@ This is a [Flask](https://flask.palletsprojects.com/en/1.1.x/) app that serves a
 
 - Python
 - Flask
+- json
 
 ## 💁‍♀️ How to use
 
