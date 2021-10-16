@@ -99,7 +99,7 @@ def index():
             img_list = lb.read()
 
         ok_img_list = json.loads(img_list)
-        resp = redirect('https://cdn.jsdelivr.net/gh/'+str(re_loadyml('Github_User'))+'/'+str(re_loadyml('Github_Wh'))+'/'+str(re_loadyml('GitHub_dz'))+'/'+ok_img_list[random.randint(0,len(ok_img_list))]["name"], code=302)
+        resp = redirect('https://cdn.jsdelivr.net/gh/'+str(re_loadyml('Github_User'))+'/'+str(re_loadyml('Github_Wh'))+'/'+str(re_loadyml('GitHub_dz'))+'/'+ok_img_list[random.randint(0,len(ok_img_list))]["name"])
         return resp
     else:   
         return abort(400, '处理出错了惹~')
