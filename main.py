@@ -44,7 +44,7 @@ def main_json():
             for i in range(0, len(ok_json)):
                 img_name = urllib.parse.quote(ok_json[i]["name"])
                 data = {
-                'name' : img_name
+                    'name' : img_name
                 }
                 if i != len(ok_json)-1:
                     fout.write(str(json.dumps(data))+",")
@@ -56,7 +56,7 @@ def main_json():
         else:
             if fileTime('./github.json') != now_time(): # 检测文件是否过期
                 print('文件过期开始更新')
-                os.remove(./github.json')
+                os.remove('./github.json')
                 json_newfile = open('./github.json','w')
                 json_newfile.close()
                 
