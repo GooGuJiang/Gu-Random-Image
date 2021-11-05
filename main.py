@@ -15,9 +15,9 @@ def now_time():
     return otherStyleTime
 
 def re_loadyml(name): #读取配置文件
-    with open('./set.yml', 'r',encoding='utf-8') as f:
+    with open("./set.yml", "r",encoding="utf-8") as f:
             bottok = yaml.load(f.read(),Loader=yaml.FullLoader)
-            if bottok['railway_how'] == True:
+            if bottok["railway_how"] == True:
                 return os.getenv(name, default=bottok[name])
             else:
                 return bottok[name]
@@ -27,20 +27,20 @@ def fileTime(file):
 
 def main_json():
     try:
-        if os.path.isfile('./github.json') == False: #检测文件是否存在
-            jsonfile = open('./github.json','w')
+        if os.path.isfile("github.json") == False: #检测文件是否存在
+            jsonfile = open("github.json","w")
             jsonfile.close()
-            url="https://api.github.com/repos/"+str(re_loadyml('Github_User'))+"/"+str(re_loadyml('Github_Wh'))+"/contents/"+str(re_loadyml('GitHub_dz'))
+            url="https://api.github.com/repos/"+str(re_loadyml("Github_User"))+"/"+str(re_loadyml("Github_Wh"))+"/contents/"+str(re_loadyml("GitHub_dz"))
             res = requests.get(url)
             uesr_text = json.loads(res.text)
             ok_json = eval(json.dumps(uesr_text))
-            jsonload = ''
-            fout = open('./github.json', 'a', encoding='utf8')
+            jsonload = ""
+            fout = open("github.json", "a", encoding="utf8")
             fout.write("[")
             for i in range(0, len(ok_json)):
                 img_name = urllib.parse.quote(ok_json[i]["name"])
                 data = {
-                'name' : img_name
+                "name" : img_name
                 }
                 if i != len(ok_json)-1:
                     fout.write(str(json.dumps(data))+",")
@@ -50,24 +50,24 @@ def main_json():
             fout.write("]")
             fout.close()
         else:
-            if fileTime('./github.json') != now_time(): #检测文件是否过期
+            if fileTime("github.json") != now_time(): #检测文件是否过期
                 print("文件过期开始更新")
-                os.remove("./github.json")
-                json_newfile = open('./github.json','w')
+                os.remove("github.json")
+                json_newfile = open("github.json","w")
                 json_newfile.close()
                 
-                url="https://api.github.com/repos/"+str(re_loadyml('Github_User'))+"/"+str(re_loadyml('Github_Wh'))+"/contents/"+str(re_loadyml('GitHub_dz'))
+                url="https://api.github.com/repos/"+str(re_loadyml("Github_User"))+"/"+str(re_loadyml("Github_Wh"))+"/contents/"+str(re_loadyml("GitHub_dz"))
                 res = requests.get(url)
                 uesr_text = json.loads(res.text)
                 ok_json = eval(json.dumps(uesr_text))
                 img_name = []
-                jsonload = ''
-                fout = open('./github.json', 'a', encoding='utf8')
+                jsonload = ""
+                fout = open("github.json", "a", encoding="utf8")
                 fout.write("[")
                 for i in range(0, len(ok_json)):
                     img_name = urllib.parse.quote(ok_json[i]["name"])
                     data = {
-                    'name' : img_name
+                    "name" : img_name
                     }
                     if i != len(ok_json)-1:
                         fout.write(str(json.dumps(data))+",")
@@ -92,51 +92,51 @@ def main_json():
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route("/")
 def index():
     if main_json() == True:
-        with open('./github.json', 'r',encoding='utf-8') as lb:
+        with open("github.json", "r",encoding="utf-8") as lb:
             img_list = lb.read()
 
         ok_img_list = json.loads(img_list)
-        rsp = redirect('#')
-        rsp.headers['Location'] = 'https://cdn.jsdelivr.net/gh/'+str(re_loadyml('Github_User'))+'/'+str(re_loadyml('Github_Wh'))+'/'+str(re_loadyml('GitHub_dz'))+'/'+ok_img_list[random.randint(0,len(ok_img_list))]["name"]
+        rsp = redirect("#")
+        rsp.headers["Location"] = "https://cdn.jsdelivr.net/gh/"+str(re_loadyml("Github_User"))+"/"+str(re_loadyml("Github_Wh"))+"/"+str(re_loadyml("GitHub_dz"))+"/"+ok_img_list[random.randint(0,len(ok_img_list))]["name"]
         return rsp
     else:   
-        return abort(400, '处理出错了惹~')
+        return abort(400, "处理出错了惹~")
 
-@app.route('/json')
+@app.route("/json")
 def imgjson():
-    with open('./github.json', 'r',encoding='utf-8') as lb:
+    with open("github.json", "r",encoding="utf-8") as lb:
             img_list = lb.read()
     ok_img_list = json.loads(img_list)
     return jsonify({"img_list": ok_img_list,"img_num": len(ok_img_list)})
 
-@app.route('/clear',methods=['GET','POST'])
+@app.route("/clear",methods=["GET","POST"])
 def guimg():
     try:
-        if request.method == 'GET':
-            gettoken=request.args.get('token',default=None)#参数不存在时默认Noen
+        if request.method == "GET":
+            gettoken=request.args.get("token",default=None)#参数不存在时默认Noen
             if gettoken is not None:
                 #return re_loadyml("Cltoken")
                 if gettoken == re_loadyml("Cltoken"):
                     try:
-                        if os.path.isfile('./github.json') == True:
-                            os.remove("./github.json")
+                        if os.path.isfile("github.json") == True:
+                            os.remove("github.json")
                             main_json()
-                            return jsonify({"state": 'OK',"error": "None"})
+                            return jsonify({"state": "OK","error": "None"})
                         else:
                             main_json()
                     except:
-                        return jsonify({"state": 'Error',"error": "清除失败"})
+                        return jsonify({"state": "Error","error": "清除失败"})
                 else:
-                    return jsonify({"Error": 'OK',"error": "Token不正确哦~"})
+                    return jsonify({"Error": "OK","error": "Token不正确哦~"})
             else:
-                return jsonify({"state": 'Error',"error": "缺少Token无法清除缓存"})
+                return jsonify({"state": "Error","error": "缺少Token无法清除缓存"})
         else:
-            return abort(400, 'Does not support POST requests')
+            return abort(400, "Does not support POST requests")
     except Exception as oo:
-        return jsonify({"state": 'Error',"error": "运行出错了惹..."})
+        return jsonify({"state": "Error","error": "运行出错了惹..."})
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=False, port=os.getenv("PORT", default=5000))
